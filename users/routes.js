@@ -55,8 +55,6 @@ function UserRoutes(app) {
         res.json(req.session['currentUser']);
     };
     const loggedInAccount = async (req, res) => {
-        console.log("logged in user:")
-        console.log(currentUser);
         res.json(currentUser);
     }
 
