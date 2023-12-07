@@ -10,6 +10,8 @@ const getRecentTournamentsQuery =
     `query TournamentsByState ($perPage:Int!, $currentDate:Timestamp!) {
             tournaments(query: {
                 perPage: $perPage
+                page: 1
+                sortBy: "startAt asc"
             filter: {
                 addrState: "MA"
                 afterDate: $currentDate
@@ -42,8 +44,38 @@ const getRecentTournamentsQuery =
                     }
                 }`
 
-const getRecent = async (vars) => {
+const getTournamentByIdQuery =
+    `query TournamentById ($id:ID) {
+        tournaments(query: {
+          filter: {
+            id: $id
+          }
+            
+            }) {
+        nodes {
+            id
+            name
+            city
+            startAt
+            venueAddress
+            events {
+                name
+            }
+            images {
+                type
+                url
+            }
+            shortSlug
+            events {
+                videogame {
+                                id
+                            }
+                        }
+                    }
+                }
+            }`
 
+const getRecent = async (vars) => {
     const tosend = {
         query: getRecentTournamentsQuery,
         variables: vars
@@ -56,4 +88,17 @@ const getRecent = async (vars) => {
     return data
 }
 
-export { getRecent }
+const getTournament = async (vars) => {
+    const tosend = {
+        query: getTournamentByIdQuery,
+        variables: vars
+    }
+    const data = await fetch(startggurl, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(tosend),
+    }).then(r => r.json())
+    return data
+}
+
+export { getRecent, getTournament }
