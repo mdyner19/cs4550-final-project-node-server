@@ -59,7 +59,14 @@ const getTournamentByIdQuery =
             startAt
             venueAddress
             events {
+                id
                 name
+                entrants {
+                    nodes {
+                        id
+                        name
+                    }
+                }
             }
             images {
                 type
@@ -74,6 +81,48 @@ const getTournamentByIdQuery =
                     }
                 }
             }`
+
+
+const searchTournamentQuery =
+    `query TournamentsByState ($perPage:Int!, $after:Timestamp!, $before:Timestamp!, $name:String!) {
+                    tournaments(query: {
+                        perPage: $perPage
+                        page: 1
+                        sortBy: "startAt asc"
+                    filter: {
+                        addrState: "MA"
+                        afterDate: $after
+                        beforeDate: $before
+                        name: $name
+                        videogameIds: [
+                                        1386
+                                    ]
+                            }
+                        }) {
+                    nodes {
+                        id
+                        name
+                        city
+                        startAt
+                        venueAddress
+                        events {
+                            name
+                        }
+                        images {
+                            type
+                            url
+                        }
+                        shortSlug
+                        events {
+                            videogame {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }`
+
+
 
 const getRecent = async (vars) => {
     const tosend = {
@@ -101,4 +150,17 @@ const getTournament = async (vars) => {
     return data
 }
 
-export { getRecent, getTournament }
+const searchTournament = async (vars) => {
+    const tosend = {
+        query: searchTournamentQuery,
+        variables: vars
+    }
+    const data = await fetch(startggurl, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(tosend),
+    }).then(r => r.json())
+    return data
+}
+
+export { getRecent, getTournament, searchTournament }
