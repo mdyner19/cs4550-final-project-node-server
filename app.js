@@ -4,6 +4,7 @@ import UserRoutes from './users/routes.js';
 import mongoose from "mongoose";
 import session from "express-session";
 import "dotenv/config";
+import StartggWorker from './Startgg/StartggWorker.js';
 const CONNECTION_STRING = process.env.DB_CONNECTION_STRING
 mongoose.connect(CONNECTION_STRING, {
     dbName: 'cs4550FinalProject', 
@@ -11,7 +12,6 @@ mongoose.connect(CONNECTION_STRING, {
     useUnifiedTopology: true,
   });
   
-import StartggWorker from './Startgg/StartggWorker.js';
 const app = express();
 app.use(
   cors({
