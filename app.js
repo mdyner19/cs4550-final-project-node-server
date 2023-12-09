@@ -11,6 +11,7 @@ mongoose.connect(CONNECTION_STRING, {
     useUnifiedTopology: true,
   });
   
+import StartggWorker from './Startgg/StartggWorker.js';
 const app = express();
 app.use(
   cors({
@@ -36,4 +37,7 @@ app.get('/', (req, res) => {
     res.send('CS4550 Final Project api')
 })
 UserRoutes(app);
+StartggWorker(app);
 app.listen(process.env.PORT || 4000);
+
+
