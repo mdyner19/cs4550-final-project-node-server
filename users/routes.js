@@ -1,5 +1,6 @@
 import * as dao from "./dao.js";
 let currentUser = null;
+let loggedInUser = null;
 function UserRoutes(app) {
     const createUser = async (req, res) => {
         const user = await dao.createUser(req.body);
@@ -19,9 +20,12 @@ function UserRoutes(app) {
     };
     const updateUser = async (req, res) => {
         const { userId } = req.params;
-        const status = await dao.updateUser(userId, req.body);
-        const currentUser = await dao.findUserById(userId);
-        req.session['currentUser'] = currentUser;
+        const { user, thisUser } = req.body;
+        const status = await dao.updateUser(userId, user);
+        if (thisUser) {
+            const currentUser = await dao.findUserById(userId);
+            req.session['currentUser'] = currentUser;
+        }
         res.json(status);
     };
     const signup = async (req, res) => {
@@ -38,26 +42,25 @@ function UserRoutes(app) {
     const signin = async (req, res) => {
         const { username, password } = req.body;
         currentUser = await dao.findUserByCredentials(username, password);
-
         if (!currentUser) {
             // User not found in the database, send an error response
             return res.status(401).json({ error: 'Incorrect Login Information' });
         }
-
         req.session['currentUser'] = currentUser;
+        loggedInUser = currentUser;
         res.json(currentUser);
     };
     const signout = (req, res) => {
         req.session.destroy();
+        loggedInUser = null;
         res.json(200);
     };
     const account = async (req, res) => {
         res.json(req.session['currentUser']);
     };
     const loggedInAccount = async (req, res) => {
-        res.json(currentUser);
+        res.json(loggedInUser);
     }
-
     app.post("/api/users", createUser);
     app.get("/api/users", findAllUsers);
     app.get("/api/users/:userId", findUserById);

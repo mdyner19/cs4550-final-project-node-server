@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import session from "express-session";
 import "dotenv/config";
 import StartggWorker from './Startgg/StartggWorker.js';
+import CommentRoutes from './comments/routes.js';
 const CONNECTION_STRING = process.env.DB_CONNECTION_STRING
 mongoose.connect(CONNECTION_STRING, {
     dbName: 'cs4550FinalProject', 
@@ -38,6 +39,7 @@ app.get('/', (req, res) => {
 })
 UserRoutes(app);
 StartggWorker(app);
+CommentRoutes(app);
 app.listen(process.env.PORT || 4000);
 
 

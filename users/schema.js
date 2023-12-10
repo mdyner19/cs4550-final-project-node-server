@@ -13,7 +13,13 @@ const userSchema = new mongoose.Schema({
         default: "USER"
     },
     following: [mongoose.Schema.Types.ObjectId],
-    followers: [mongoose.Schema.Types.ObjectId]
+    followers: [mongoose.Schema.Types.ObjectId],
+    favoriteEvents: [Number],
+    role: {
+        type: String,
+        enum: ["ADMIN", "USER"],
+        default: "USER"
+    }
 },
     { collection: "users" });
 export default userSchema;
