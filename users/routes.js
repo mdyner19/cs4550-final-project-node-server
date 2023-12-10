@@ -56,7 +56,11 @@ function UserRoutes(app) {
         res.json(200);
     };
     const account = async (req, res) => {
-        res.json(req.session['currentUser']);
+        if (req.session['currentUser'] === undefined) {
+            res.json(null);
+        } else {
+            res.json(req.session['currentUser']);
+        }
     };
     const loggedInAccount = async (req, res) => {
         res.json(loggedInUser);
